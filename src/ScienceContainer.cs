@@ -63,7 +63,7 @@ namespace ScienceContainer{
 				part,
 				data,
 				data.transmitValue,
-				ModuleScienceLab.GetBoostForVesselData(part.vessel, data),
+				(data.labBoost >0 ? data.labBoost : ModuleScienceLab.GetBoostForVesselData(part.vessel, data)),
 				false,
 				"",
 				false,
