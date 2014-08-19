@@ -8,7 +8,7 @@ namespace ScienceContainer{
 	public class ScienceContainer : PartModule, IScienceDataContainer{
 		
 		protected List<ScienceData> storedData = new List<ScienceData>();
-
+		
 		/* Overriden PartModule Methods */
 		public override void OnStart(StartState state){
 			base.OnStart(state);
@@ -127,11 +127,11 @@ namespace ScienceContainer{
 		public void onLabComplete(ScienceData data){
 			ReviewDataItem(data);
 		}
-
+		
 		/* Fields */
 		[KSPField(guiActive = true, guiName = "Warning Prompt Suppressed", isPersistant = true)]
 		protected bool suppressPrompt = false;
-
+		
 		/* Events */
 		[KSPEvent(name = "collectDataManually", active = true, guiActive = true, guiName = "Collect Data")]
 		public void collectDataManually(){
@@ -175,23 +175,23 @@ namespace ScienceContainer{
 			showMessages(numberOfData, lastData);
 			updateMenu();
 		}
-
+		
 		[KSPEvent(name = "collectDataEVA", active = true, externalToEVAOnly = true, guiActiveUnfocused = true, guiName = "Collect Data", unfocusedRange = 1.5f)]
 		public void collectDataEVA(){
 			collectData();
 		}
-
+		
 		[KSPEvent(name = "togglePrompt", active = true, guiActive = true, guiName = "Toggle Prompt Suppression")]
 		public void togglePrompt(){
 			suppressPrompt = !suppressPrompt;
 		}
-
+		
 		/* Actions */
 		[KSPAction("Collect Data")]
 		public void collectDataAction(KSPActionParam param){
 			collectData();
 		}
-
+		
 		/* Other Methods */
 		protected void updateMenu(){
 			Events["retrieveDataEVA"].active = storedData.Count > 0;
@@ -200,7 +200,7 @@ namespace ScienceContainer{
 			Events["reviewStoredData"].guiActive = storedData.Count > 0;
 			Events["reviewStoredData"].guiName = "Review Data (" + storedData.Count + ")";
 		}
-
+		
 		protected void cancelAutoCollect(){
 			List<AutoCollectScienceContainer> containers = vessel.FindPartModulesImplementing<AutoCollectScienceContainer>().ToList();
 			foreach(AutoCollectScienceContainer c in containers){
@@ -209,7 +209,7 @@ namespace ScienceContainer{
 				}
 			}
 		}
-
+		
 		protected virtual void collectData(){
 			List<IScienceDataContainer> containers = vessel.FindPartModulesImplementing<IScienceDataContainer>();
 			bool prompt = false;
@@ -229,14 +229,14 @@ namespace ScienceContainer{
 				onTransferNonrerunnable(containers);
 			}
 		}
-
+		
 		protected void promptForCollect(List<IScienceDataContainer> containers){
 			DialogOption[] dialog = new DialogOption[2];
 			dialog[0] = new DialogOption<List<IScienceDataContainer>>("Transfer All Science", new Callback<List<IScienceDataContainer>>(onTransferNonrerunnable), containers);
 			dialog[1] = new DialogOption<List<IScienceDataContainer>>("Transfer Rerunnable Science Only", new Callback<List<IScienceDataContainer>>(onTransferRerunnable), containers);
 			PopupDialog.SpawnPopupDialog(new MultiOptionDialog("Transfering science from nonrerunnable parts will cause them to be inoperable.", "Warning", HighLogic.Skin, dialog), false, HighLogic.Skin);
 		}
-
+		
 		protected void onTransferNonrerunnable(List<IScienceDataContainer> containers){
 			int numberOfData = 0;
 			ScienceData lastData = null;
@@ -275,7 +275,7 @@ namespace ScienceContainer{
 			}
 			showMessages(numberOfData, lastData);
 		}
-
+		
 		protected void showMessages(int numberOfData, ScienceData lastData){
 			if(numberOfData == 1){
 				ScreenMessages.PostScreenMessage(lastData.title + " transferred to " + base.part.partInfo.title + "." , 4f, ScreenMessageStyle.UPPER_LEFT);
