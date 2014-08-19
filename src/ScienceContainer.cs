@@ -143,25 +143,10 @@ namespace ScienceContainer{
 		protected bool suppressPrompt = false;
 
 		/* Events */
-		[KSPEvent(name = "collectData", active = true, guiActive = true, guiName = "Collect Data")]
-		public void collectData(){
-			List<IScienceDataContainer> containers = vessel.FindPartModulesImplementing<IScienceDataContainer>();
-			bool prompt = false;
-
-			if(!suppressPrompt){
-				foreach(IScienceDataContainer c in containers){
-					if(!c.IsRerunnable() && c.GetData().Count()>0){
-						prompt = true;
-					}
-				}
-			}
-
-			if(prompt){
-				promptForCollect(containers);
-			}
-			else{
-				onTransferNonrerunnable(containers);
-			}
+		[KSPEvent(name = "collectDataManually", active = true, guiActive = true, guiName = "Collect Data")]
+		public void collectDataManually(){
+			cancelAutoCollect();
+			collectData();
 		}
 		
 		[KSPEvent(name = "reviewStoredData", active = true, guiActive = false, guiName = "Review Data")]
@@ -197,12 +182,7 @@ namespace ScienceContainer{
 					}
 				}
 			}
-			if(numberOfData == 1){
-				ScreenMessages.PostScreenMessage(lastData.title + " transferred to Science Container.", 4f, ScreenMessageStyle.UPPER_LEFT);
-			}
-			else if(numberOfData > 1){
-				ScreenMessages.PostScreenMessage(numberOfData + " science reports transferred to Science Container.", 4f, ScreenMessageStyle.UPPER_LEFT);
-			}
+			showMessages(numberOfData, lastData);
 			updateMenu();
 		}
 
@@ -229,6 +209,35 @@ namespace ScienceContainer{
 			
 			Events["reviewStoredData"].guiActive = storedData.Count > 0;
 			Events["reviewStoredData"].guiName = "Review Data (" + storedData.Count + ")";
+		}
+
+		protected void cancelAutoCollect(){
+			List<AutoCollectScienceContainer> containers = vessel.FindPartModulesImplementing<AutoCollectScienceContainer>().ToList();
+			foreach(AutoCollectScienceContainer c in containers){
+				if(c.isAutoCollectEnabled()){
+					c.stopAutoCollect();
+				}
+			}
+		}
+
+		protected virtual void collectData(){
+			List<IScienceDataContainer> containers = vessel.FindPartModulesImplementing<IScienceDataContainer>();
+			bool prompt = false;
+			
+			if(!suppressPrompt){
+				foreach(IScienceDataContainer c in containers){
+					if(!c.IsRerunnable() && c.GetData().Count()>0){
+						prompt = true;
+					}
+				}
+			}
+			
+			if(prompt){
+				promptForCollect(containers);
+			}
+			else{
+				onTransferNonrerunnable(containers);
+			}
 		}
 
 		protected void promptForCollect(List<IScienceDataContainer> containers){
@@ -279,10 +288,10 @@ namespace ScienceContainer{
 
 		protected void showMessages(int numberOfData, ScienceData lastData){
 			if(numberOfData == 1){
-				ScreenMessages.PostScreenMessage(lastData.title + " transferred to Science Container.", 4f, ScreenMessageStyle.UPPER_LEFT);
+				ScreenMessages.PostScreenMessage(lastData.title + " transferred to " + base.part.partInfo.title + "." , 4f, ScreenMessageStyle.UPPER_LEFT);
 			}
 			else if(numberOfData > 1){
-				ScreenMessages.PostScreenMessage(numberOfData + " science reports transferred to Science Container.", 4f, ScreenMessageStyle.UPPER_LEFT);
+				ScreenMessages.PostScreenMessage(numberOfData + " science reports transferred to " + base.part.partInfo.title + ".", 4f, ScreenMessageStyle.UPPER_LEFT);
 			}
 			updateMenu();
 		}
