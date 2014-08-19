@@ -113,12 +113,7 @@ namespace ScienceContainer{
 			if(labList.Count > 0){
 				ModuleScienceLab lab = labList.FirstOrDefault(l => l.IsOperational());
 				if(lab != null){
-					if(data.labBoost > 0){
-						lab.StartCoroutine(labList.FirstOrDefault().ProcessData(data, new Callback<ScienceData>(onLabCompleteDMagic)));
-					}
-					else{
-						lab.StartCoroutine(labList.FirstOrDefault().ProcessData(data, new Callback<ScienceData>(onLabComplete)));
-					}
+					lab.StartCoroutine(labList.FirstOrDefault().ProcessData(data, new Callback<ScienceData>(onLabComplete)));
 				}
 				else{
 					ScreenMessages.PostScreenMessage("No opperational science lab on this vessel.", 4f, ScreenMessageStyle.UPPER_CENTER);
@@ -130,11 +125,6 @@ namespace ScienceContainer{
 		}
 		
 		public void onLabComplete(ScienceData data){
-			ReviewDataItem(data);
-		}
-
-		public void onLabCompleteDMagic(ScienceData data){
-			data.transmitValue = .7f;
 			ReviewDataItem(data);
 		}
 
