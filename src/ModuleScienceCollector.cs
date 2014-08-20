@@ -6,17 +6,10 @@ using System.Linq;
 using UnityEngine;
 
 namespace ScienceContainer {
-	public class ModuleScienceCollecter : PartModule {
-
-		public override void OnUpdate() {
-			Events["collectData"].active = (part.FindModulesImplementing<ModuleScienceContainer>().Count() > 1);
-		}
+	public class ModuleScienceCollector : PartModule {
 
 		[KSPEvent(name = "collectData", active = true, guiActive = true, guiName = "Collect Data")]
 		public void collectData() {
-			int i = 0;
-			ScienceData lastData = null;
-
 			ModuleScienceContainer storage = part.FindModuleImplementing<ModuleScienceContainer>();
 
 			if(storage == null) {
@@ -24,17 +17,11 @@ namespace ScienceContainer {
 				return;
 			}
 
-			List<IScienceDataContainer> containers = vessel.FindPartModulesImplementing<IScienceDataContainer>();
+			List<IScienceDataContainer> containers = vessel.FindPartModulesImplementing<IScienceDataContainer>()
+				.Where(container => !container.Equals(storage)).ToList();
 
-			foreach(IScienceDataContainer c in containers) {
-				if((PartModule)c != (PartModule)storage)
-					c.GetData().ToList().ForEach(delegate (ScienceData d) {
-						lastData = d;
-						storage.AddData(d);
-						c.DumpData(d);
-						i++;
-					});
-			}
+
+			storage.StoreData(containers, false);
 		}
 
 		[KSPAction("Collect Data")]
