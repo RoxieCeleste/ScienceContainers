@@ -62,17 +62,17 @@ namespace ScienceContainer {
 
 		/* Actions */
 		[KSPAction("Toggle Auto-collect")]
-		public void toggleAutoCollect() {
+		public void toggleAutoCollect(KSPActionParam param) {
 			autoCollectEnabled = !autoCollectEnabled;
 		}
 
 		[KSPAction("Start Auto-collect")]
-		public void startAutoCollectAction() {
+		public void startAutoCollectAction(KSPActionParam param) {
 			startAutoCollect();
 		}
 
 		[KSPAction("Stop Auto-collect")]
-		public void stopAutoCollectAction() {
+		public void stopAutoCollectAction(KSPActionParam param) {
 			stopAutoCollect();
 		}
 

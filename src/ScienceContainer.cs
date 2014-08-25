@@ -8,7 +8,7 @@ using ConfigurableScienceData;
 namespace ScienceContainer {
 	public class ScienceContainer : PartModule, IScienceDataContainer {
 
-		protected List<CfgScienceData> storedData = new List<CfgScienceData>();
+		protected List<ScienceData> storedData = new List<ScienceData>();
 
 		/* Overriden PartModule Methods */
 		public override void OnStart(StartState state) {
@@ -17,7 +17,7 @@ namespace ScienceContainer {
 
 		public override void OnLoad(ConfigNode node) {
 			base.OnLoad(node);
-			foreach(ConfigNode dataNode in node.GetNodes("CfgScienceData")) {
+			foreach(ConfigNode dataNode in node.GetNodes("ScienceData")) {
 				storedData.Add(new CfgScienceData(dataNode));
 			}
 			updateMenu();
@@ -25,9 +25,9 @@ namespace ScienceContainer {
 
 		public override void OnSave(ConfigNode node) {
 			base.OnSave(node);
-			node.RemoveNodes("CfgScienceData");
+			node.RemoveNodes("ScienceData");
 			foreach(CfgScienceData data in storedData) {
-				data.Save((ConfigNode)node.AddNode("CfgScienceData"));
+				data.Save((ConfigNode)node.AddNode("ScienceData"));
 			}
 		}
 
@@ -68,7 +68,7 @@ namespace ScienceContainer {
 				false,
 				"",
 				false,
-				data.labBoost < 1 && ModuleScienceLab.IsLabData(data),
+				data.labBoost < 1 && vessel.FindPartModulesImplementing<ModuleCfgScienceLab>().Count > 0 && ModuleScienceLab.IsLabData(data),
 				new Callback<ScienceData>(onDiscardData),
 				new Callback<ScienceData>(onKeepData),
 				new Callback<ScienceData>(onTransmitData),
