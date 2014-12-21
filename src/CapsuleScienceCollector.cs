@@ -92,7 +92,6 @@ namespace ScienceContainers {
 		}
 
 		protected override void storeData() {
-			print("Test");
 			foreach(ModuleScienceContainer c in FlightGlobals.ActiveVessel.FindPartModulesImplementing<ModuleScienceContainer>()) {
 				foreach(ScienceData d in c.GetData()) {
 					if(d != null) {
