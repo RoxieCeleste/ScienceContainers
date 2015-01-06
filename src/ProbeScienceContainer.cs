@@ -40,6 +40,8 @@ namespace ScienceContainers {
 			foreach(ConfigNode dataNode in node.GetNodes("ScienceData")) {
 				storedData.Add(new ScienceData(dataNode));
 			}
+
+			updateMenu();
 		}
 
 		public override void OnSave(ConfigNode node) {
@@ -75,6 +77,7 @@ namespace ScienceContainers {
 
 		public void DumpData(ScienceData data) {
 			storedData.Remove(data);
+			updateMenu();
 			ScreenMessages.PostScreenMessage("<color=#ff9900ff>[" + part.partInfo.title + "]: " + data.title + " Removed</color>", 5f, ScreenMessageStyle.UPPER_LEFT);
 		}
 
@@ -171,6 +174,7 @@ namespace ScienceContainers {
 						if(d != null) {
 							storedData.Add(d);
 							c.DumpData(d);
+							updateMenu();
 							ScreenMessages.PostScreenMessage("<color=#99ff00ff>[" + part.partInfo.title + "]: <i>" + d.title + " </i> Added</color>", 5f, ScreenMessageStyle.UPPER_LEFT);
 						}
 					}
@@ -210,16 +214,10 @@ namespace ScienceContainers {
 					}
 				}
 			}
+		}
 
-			foreach(IScienceDataContainer c in FlightGlobals.ActiveVessel.FindPartModulesImplementing<IScienceDataContainer>()) {
-				foreach(ScienceData d in c.GetData()) {
-					if(d != null) {
-					 storedData.Add(d);
-						c.DumpData(d);
-						ScreenMessages.PostScreenMessage("<color=#99ff00ff>[" + part.partInfo.title + "]: <i>" + d.title + " </i> Added</color>", 5f, ScreenMessageStyle.UPPER_LEFT);
-					}
-				}
-			}
+		protected void updateMenu() {
+			
 		}
 
 		#endregion

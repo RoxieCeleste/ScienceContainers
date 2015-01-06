@@ -100,15 +100,6 @@ namespace ScienceContainers {
 					}
 				}
 			}
-
-			foreach(IScienceDataContainer c in FlightGlobals.ActiveVessel.FindPartModulesImplementing<IScienceDataContainer>()) {
-				foreach(ScienceData d in c.GetData()) {
-					if(d != null) {
-						scienceContainer.AddData(d);
-						c.DumpData(d);
-					}
-				}
-			}
 		}
 
 		#endregion
