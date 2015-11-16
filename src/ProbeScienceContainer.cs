@@ -81,6 +81,13 @@ namespace ScienceContainers {
 			ScreenMessages.PostScreenMessage("<color=#ff9900ff>[" + part.partInfo.title + "]: " + data.title + " Removed</color>", 5f, ScreenMessageStyle.UPPER_LEFT);
 		}
 
+		public void ReturnData(ScienceData data) {
+			if (data == null)
+				return;
+
+			storedData.Add(data);
+		}
+
 		public void ReviewData() {
 			foreach(ScienceData data in storedData) {
 				ReviewDataItem(data);
@@ -96,7 +103,7 @@ namespace ScienceContainers {
 				false,
 				"",
 				false,
-				data.labBoost < 1 && vessel.FindPartModulesImplementing<ModuleScienceLab>().Count > 0 && ModuleScienceLab.IsLabData(data),
+				ModuleScienceLab.IsLabData(vessel, data),
 				new Callback<ScienceData>(onDiscardData),
 				new Callback<ScienceData>(onKeepData),
 				new Callback<ScienceData>(onTransmitData),
@@ -172,6 +179,7 @@ namespace ScienceContainers {
 				foreach(IScienceDataContainer c in containers) {
 					foreach(ScienceData d in c.GetData()) {
 						if(d != null) {
+							d.container = part.flightID;
 							storedData.Add(d);
 							c.DumpData(d);
 							updateMenu();
@@ -208,6 +216,7 @@ namespace ScienceContainers {
 			foreach(ModuleScienceContainer c in FlightGlobals.ActiveVessel.FindPartModulesImplementing<ModuleScienceContainer>()) {
 				foreach(ScienceData d in c.GetData()) {
 					if(d != null) {
+						d.container = part.flightID;
 						storedData.Add(d);
 						c.DumpData(d);
 						ScreenMessages.PostScreenMessage("<color=#99ff00ff>[" + part.partInfo.title + "]: <i>" + d.title + " </i> Added</color>", 5f, ScreenMessageStyle.UPPER_LEFT);
